@@ -66,7 +66,7 @@ void intcode(std::vector<int> &memory)
     }
 }
 
-void part1()
+int part1()
 {
     std::vector<int> input;
     std::vector<int> validation;
@@ -99,10 +99,39 @@ void part1()
     input.at(1) = 12;
     input.at(2) = 2;
     intcode(input);
-    std::cout<< "Part 1: Value at position 0: " << input.at(0) << std::endl;
+    return input.at(0);
+}
+
+std::pair<int, int> part2()
+{
+    int validation = 19690720;
+    std::vector<int> input;
+    for (int n = 0; n < 100; n++)
+    {
+        for (int v = 0; v < 100; v++)
+        {
+            input = kInput;
+            input.at(1) = n;
+            input.at(2) = v;
+            intcode(input);
+            if (validation == input.at(0))
+            {
+                return std::pair<int, int>(n, v);
+            }
+        }
+    }
+
+    return std::pair<int, int>(0, 0);
 }
 
 int main()
 {
-    part1();
+    int p1_output = part1();
+    assert(7594646 == p1_output);
+    std::cout<< "Part 1: Value at position 0: " << p1_output << std::endl;
+
+    std::pair<int, int> p2_output = part2();
+    assert(33 == p2_output.first);
+    assert(76 == p2_output.second);
+    std::cout<< "Part 2: NounVerb: " << p2_output.first << p2_output.second << std::endl;
 }
