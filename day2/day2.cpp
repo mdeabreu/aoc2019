@@ -94,6 +94,12 @@ void part1()
     validation = {30,1,1,4,2,5,6,0,99};
     intcode(input);
     assert(validation == input);
+
+    input = kInput;
+    input.at(1) = 12;
+    input.at(2) = 2;
+    intcode(input);
+    std::cout<< "Part 1: Value at position 0: " << input.at(0) << std::endl;
 }
 
 int main()
