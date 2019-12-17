@@ -1,6 +1,6 @@
 #include <vector>
 
-std::vector<int> kInput = {
+static const std::vector<int> kInput = {
 1,
 0,
 0,
