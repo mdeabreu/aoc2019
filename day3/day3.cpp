@@ -1,21 +1,47 @@
 #include <iostream>
+#include <algorithm>
 #include <cassert>
 #include "day3.hpp"
 
 typedef std::pair<int, int> Coord;
 
-std::vector<Coord> parse(std::string input)
+std::vector<std::string> tokenize(const std::string &input, const char &token)
 {
-    std::string::size_type start = 0;
-    std::string::size_type end = input.find(',', start);
-    if (end == std::string::npos)
-    {
-        return {};
-    }
-    std::string instruction = input.substr(start, end);
-    for(start; start < end; start ++)
-    std::cout<<"substring: "<< instruction << std::endl;
-    return std::vector<Coord> {std::make_pair(0,0)};
+    std::vector<std::string> results;
+    std::string current_chunk;
+
+    auto string_to_tokens = [&results, &current_chunk, token](const char &current_character) {
+        if (current_character == token)
+        {
+            // We found the token, add the current chunk to our results
+            results.push_back(current_chunk);
+            current_chunk.clear();
+        }
+        else
+        {
+            // We have not yet found the token, store the current character
+            current_chunk += current_character;
+        }
+    };
+
+    // Iterate and tokenize the input string
+    std::for_each(input.begin(), input.end(), string_to_tokens);
+    // Don't forget to flush the current chunk into the results
+    results.push_back(current_chunk);
+
+    return results;
+}
+
+std::vector<Coord> parse(const std::string &input)
+{
+    std::vector<Coord> results{std::make_pair(0, 0)};
+    std::vector<std::string> steps = tokenize(input, ',');
+
+    auto steps_to_coords = [](const std::string &current_step) {};
+
+    std::for_each(steps.begin(), steps.end(), steps_to_coords);
+
+    return results;
 }
 
 std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coord> second)
