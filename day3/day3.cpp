@@ -20,7 +20,7 @@ std::vector<Coord> parse(std::string input)
 
 std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coord> second)
 {
-    return std::vector<Coord> {std::make_pair(0,0)};
+    return std::vector<Coord>{std::make_pair(0, 0)};
 }
 
 int closest_intersection(std::vector<Coord> intersections)
