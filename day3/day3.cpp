@@ -34,14 +34,59 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
 
 std::vector<Coord> parse(const std::string &input)
 {
-    std::vector<Coord> results{std::make_pair(0, 0)};
-    std::vector<std::string> steps = tokenize(input, ',');
+    std::vector<Coord> coords{std::make_pair(0, 0)};
+    std::vector<std::string> instructions = tokenize(input, ',');
 
-    auto steps_to_coords = [](const std::string &current_step) {};
+    auto instructions_to_coords = [&coords](const std::string &current_step) {
+        const char direction = current_step.at(0);
+        const int num_steps = atoi(current_step.substr(1).data());
 
-    std::for_each(steps.begin(), steps.end(), steps_to_coords);
+        //std::cout<< current_step << ": " << direction << " " << num_steps << std::endl;
+        if (direction == 'U')
+        {
+            for (int i = 0; i < num_steps; i++)
+            {
+                Coord previous_coord = coords.back();
+                previous_coord.second++;
+                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
+                coords.push_back(previous_coord);
+            }
+        }
+        else if (direction == 'D')
+        {
+                        for (int i = 0; i < num_steps; i++)
+            {
+                Coord previous_coord = coords.back();
+                previous_coord.second--;
+                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
+                coords.push_back(previous_coord);
+            }
+        }
+        else if (direction == 'L')
+        {
+                        for (int i = 0; i < num_steps; i++)
+            {
+                Coord previous_coord = coords.back();
+                previous_coord.first--;
+                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
+                coords.push_back(previous_coord);
+            }
+        }
+        else if (direction == 'R')
+        {
+                        for (int i = 0; i < num_steps; i++)
+            {
+                Coord previous_coord = coords.back();
+                previous_coord.first++;
+                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
+                coords.push_back(previous_coord);
+            }
+        }
+    };
 
-    return results;
+    std::for_each(instructions.begin(), instructions.end(), instructions_to_coords);
+
+    return coords;
 }
 
 std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coord> second)
