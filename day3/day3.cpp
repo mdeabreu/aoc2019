@@ -10,7 +10,7 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
     std::vector<std::string> results;
     std::string current_chunk;
 
-    auto string_to_tokens = [&results, &current_chunk, token](const char &current_character) {
+    auto string_to_chunks = [&results, &current_chunk, token](const char &current_character) {
         if (current_character == token)
         {
             // We found the token, add the current chunk to our results
@@ -25,7 +25,7 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
     };
 
     // Iterate and tokenize the input string
-    std::for_each(input.begin(), input.end(), string_to_tokens);
+    std::for_each(input.begin(), input.end(), string_to_chunks);
     // Don't forget to flush the current chunk into the results
     results.push_back(current_chunk);
 
