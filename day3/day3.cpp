@@ -91,7 +91,18 @@ std::vector<Coord> parse(const std::string &input)
 
 std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coord> second)
 {
-    return std::vector<Coord>{std::make_pair(0, 0)};
+    std::vector<Coord> intersections;
+    auto get_intersections = [&intersections, second](const Coord& coord){
+        auto res = std::find(second.begin(), second.end(), coord);
+        if (res != second.end() && res != second.begin())
+        {
+            intersections.push_back(*res);
+}
+    };
+
+    std::for_each(first.begin(), first.end(), get_intersections);
+
+    return intersections;
 }
 
 int closest_intersection(std::vector<Coord> intersections)
