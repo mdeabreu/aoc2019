@@ -107,7 +107,12 @@ std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coor
 
 int closest_intersection(std::vector<Coord> intersections)
 {
-    return 0;
+    auto coord_compare = [](const Coord& a, const Coord& b) -> bool {
+        return (abs(a.first) + abs(a.second)) < (abs(b.first) + abs(b.second));
+    };
+    Coord closest = *std::min_element(intersections.begin(), intersections.end(), coord_compare);
+
+    return closest.first + closest.second;
 }
 
 int part1()
