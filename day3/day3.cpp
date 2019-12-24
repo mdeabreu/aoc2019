@@ -127,6 +127,16 @@ int part1()
     std::vector<Coord> intersections;
     int distance;
 
+    // R8,U5,L5,D3
+    // U7,R6,D4,L4 = distance 6
+    first_wire_string = "R8,U5,L5,D3";
+    second_wire_string = "U7,R6,D4,L4";
+    first_wire = parse(first_wire_string);
+    second_wire = parse(second_wire_string);
+    intersections = find_intersections(first_wire, second_wire);
+    distance = closest_intersection(intersections);
+    assert(6 == distance);
+
     // R75,D30,R83,U83,L12,D49,R71,U7,L72
     // U62,R66,U55,R34,D71,R55,D58,R83 = distance 159
     first_wire_string = "R75,D30,R83,U83,L12,D49,R71,U7,L72";
