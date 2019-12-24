@@ -3,7 +3,18 @@
 #include <cassert>
 #include "day3.hpp"
 
-typedef std::pair<int, int> Coord;
+struct Coord
+{
+    int x{0};
+    int y{0};
+};
+
+typedef std::pair<Coord,Coord> Line;
+
+bool is_horizontal(Line line)
+{
+    return (line.first.x != line.second.x) && (line.first.y == line.second.y);
+}
 
 std::vector<std::string> tokenize(const std::string &input, const char &token)
 {
@@ -32,75 +43,67 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
     return results;
 }
 
-std::vector<Coord> parse(const std::string &input)
+std::vector<Line> parse(const std::string &input)
 {
-    std::vector<Coord> coords{std::make_pair(0, 0)};
-    std::vector<std::string> instructions = tokenize(input, ',');
+    std::vector<Line> lines;
+    std::vector<std::string> steps = tokenize(input, ',');
 
-    auto instructions_to_coords = [&coords](const std::string &current_step) {
-        const char direction = current_step.at(0);
-        const int num_steps = atoi(current_step.substr(1).data());
+    auto steps_to_lines = [&lines](const std::string& step){
+        Coord start;
+        if (lines.size() != 0)
+        {
+            start = lines.back().second;
+        }
 
-        //std::cout<< current_step << ": " << direction << " " << num_steps << std::endl;
-        if (direction == 'U')
+        const char direction = step.at(0);
+        int distance = atoi(step.substr(1).data());
+        Coord end = start;
+
+        switch (direction)
         {
-            for (int i = 0; i < num_steps; i++)
+            case 'U':
             {
-                Coord previous_coord = coords.back();
-                previous_coord.second++;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
-                coords.push_back(previous_coord);
+                end.y += distance;
+                break;
+            }
+            case 'D':
+            {
+                end.y -= distance;
+                break;
+            }
+            case 'L':
+            {
+                end.x -= distance;
+                break;
+            }
+            case 'R':
+            {
+                end.x += distance;
+                break;
             }
         }
-        else if (direction == 'D')
-        {
-                        for (int i = 0; i < num_steps; i++)
-            {
-                Coord previous_coord = coords.back();
-                previous_coord.second--;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
-                coords.push_back(previous_coord);
-            }
-        }
-        else if (direction == 'L')
-        {
-                        for (int i = 0; i < num_steps; i++)
-            {
-                Coord previous_coord = coords.back();
-                previous_coord.first--;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
-                coords.push_back(previous_coord);
-            }
-        }
-        else if (direction == 'R')
-        {
-                        for (int i = 0; i < num_steps; i++)
-            {
-                Coord previous_coord = coords.back();
-                previous_coord.first++;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
-                coords.push_back(previous_coord);
-            }
-        }
+        lines.push_back(std::make_pair(start, end));
     };
 
-    std::for_each(instructions.begin(), instructions.end(), instructions_to_coords);
+    std::for_each(steps.begin(), steps.end(), steps_to_lines);
 
-    return coords;
+    return lines;
 }
 
-std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coord> second)
+std::vector<Coord> find_intersections(std::vector<Line> first, std::vector<Line> second)
 {
     std::vector<Coord> intersections;
-    auto get_intersections = [&intersections, second](const Coord& coord){
-        auto res = std::find(second.begin(), second.end(), coord);
-        if (res != second.end() && res != second.begin())
+    
+    for(Line first_line : first)
+    {
+        for (Line second_line : second)
         {
-            intersections.push_back(*res);
-}
-    };
-
-    std::for_each(first.begin(), first.end(), get_intersections);
+            if (is_horizontal(first_line) != is_horizontal(second_line))
+            {
+                
+            }
+        }
+    }
 
     return intersections;
 }
@@ -108,11 +111,11 @@ std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coor
 int closest_intersection(std::vector<Coord> intersections)
 {
     auto coord_compare = [](const Coord& a, const Coord& b) -> bool {
-        return (abs(a.first) + abs(a.second)) < (abs(b.first) + abs(b.second));
+        return (abs(a.x) + abs(a.y)) < (abs(b.x) + abs(b.y));
     };
     Coord closest = *std::min_element(intersections.begin(), intersections.end(), coord_compare);
 
-    return closest.first + closest.second;
+    return closest.x + closest.y;
 }
 
 int part1()
@@ -122,8 +125,8 @@ int part1()
     // find intersection with min x, min y
     std::string first_wire_string;
     std::string second_wire_string;
-    std::vector<Coord> first_wire;
-    std::vector<Coord> second_wire;
+    std::vector<Line> first_wire;
+    std::vector<Line> second_wire;
     std::vector<Coord> intersections;
     int distance;
 
