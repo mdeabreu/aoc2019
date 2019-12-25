@@ -4,8 +4,9 @@
 #include "day3.hpp"
 
 typedef std::pair<int, int> Coord;
+typedef std::vector<Coord> Wire;
 
-std::vector<std::string> tokenize(const std::string &input, const char &token)
+std::vector<std::string> tokenize(const std::string &input, const char &token = ',')
 {
     std::vector<std::string> results;
     std::string current_chunk;
@@ -31,10 +32,9 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
     return results;
 }
 
-std::vector<Coord> parse(const std::string &input)
+Wire rasterize(const std::vector<std::string> &instructions)
 {
-    std::vector<Coord> coords{std::make_pair(0, 0)};
-    std::vector<std::string> instructions = tokenize(input, ',');
+    Wire coords{std::make_pair(0, 0)};
 
     for (const std::string &instruction : instructions)
     {
@@ -113,49 +113,47 @@ int part1()
     // parse the string for each line, build up an array of line segments
     // for each line segment, find intersections, store
     // find intersection with min x, min y
-    std::string first_wire_string;
-    std::string second_wire_string;
-    std::vector<Coord> first_wire;
-    std::vector<Coord> second_wire;
+    std::pair<std::string, std::string> inputs;
+    Wire first;
+    Wire second;
     std::vector<Coord> intersections;
     int distance;
 
     // R8,U5,L5,D3
     // U7,R6,D4,L4 = distance 6
-    first_wire_string = "R8,U5,L5,D3";
-    second_wire_string = "U7,R6,D4,L4";
-    first_wire = parse(first_wire_string);
-    second_wire = parse(second_wire_string);
-    intersections = find_intersections(first_wire, second_wire);
+    inputs = {"R8,U5,L5,D3",
+              "U7,R6,D4,L4"};
+    first = rasterize(tokenize(inputs.first));
+    second = rasterize(tokenize(inputs.second));
+    intersections = find_intersections(first, second);
     distance = closest_intersection(intersections);
     assert(6 == distance);
 
     // R75,D30,R83,U83,L12,D49,R71,U7,L72
     // U62,R66,U55,R34,D71,R55,D58,R83 = distance 159
-    first_wire_string = "R75,D30,R83,U83,L12,D49,R71,U7,L72";
-    second_wire_string = "U62,R66,U55,R34,D71,R55,D58,R83";
-    first_wire = parse(first_wire_string);
-    second_wire = parse(second_wire_string);
-    intersections = find_intersections(first_wire, second_wire);
+    inputs = {"R75,D30,R83,U83,L12,D49,R71,U7,L72",
+              "U62,R66,U55,R34,D71,R55,D58,R83"};
+    first = rasterize(tokenize(inputs.first));
+    second = rasterize(tokenize(inputs.second));
+    intersections = find_intersections(first, second);
     distance = closest_intersection(intersections);
     assert(159 == distance);
 
     // R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
     // U98,R91,D20,R16,D67,R40,U7,R15,U6,R7 = distance 135
-    first_wire_string = "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51";
-    second_wire_string = "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7";
-    first_wire = parse(first_wire_string);
-    second_wire = parse(second_wire_string);
-    intersections = find_intersections(first_wire, second_wire);
+    inputs = {"R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51",
+              "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"};
+    first = rasterize(tokenize(inputs.first));
+    second = rasterize(tokenize(inputs.second));
+    intersections = find_intersections(first, second);
     distance = closest_intersection(intersections);
     assert(135 == distance);
 
     // Now for the real deal
-    first_wire_string = kInput.first;
-    second_wire_string = kInput.second;
-    first_wire = parse(first_wire_string);
-    second_wire = parse(second_wire_string);
-    intersections = find_intersections(first_wire, second_wire);
+    inputs = kInput;
+    first = rasterize(tokenize(inputs.first));
+    second = rasterize(tokenize(inputs.second));
+    intersections = find_intersections(first, second);
     distance = closest_intersection(intersections);
     assert(896 == distance);
     return distance;
