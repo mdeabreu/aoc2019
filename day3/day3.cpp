@@ -10,7 +10,9 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
     std::vector<std::string> results;
     std::string current_chunk;
 
-    auto string_to_chunks = [&results, &current_chunk, token](const char &current_character) {
+    // Iterate and tokenize the input string
+    for(const char& current_character : input)
+    {
         if (current_character == token)
         {
             // We found the token, add the current chunk to our results
@@ -22,10 +24,7 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
             // We have not yet found the token, store the current character
             current_chunk += current_character;
         }
-    };
-
-    // Iterate and tokenize the input string
-    std::for_each(input.begin(), input.end(), string_to_chunks);
+    }
     // Don't forget to flush the current chunk into the results
     results.push_back(current_chunk);
 
@@ -37,18 +36,17 @@ std::vector<Coord> parse(const std::string &input)
     std::vector<Coord> coords{std::make_pair(0, 0)};
     std::vector<std::string> instructions = tokenize(input, ',');
 
-    auto instructions_to_coords = [&coords](const std::string &current_step) {
-        const char direction = current_step.at(0);
-        const int num_steps = atoi(current_step.substr(1).data());
+    for (const std::string &instruction : instructions)
+    {
+        const char direction = instruction.at(0);
+        const int num_steps = atoi(instruction.substr(1).data());
 
-        //std::cout<< current_step << ": " << direction << " " << num_steps << std::endl;
         if (direction == 'U')
         {
             for (int i = 0; i < num_steps; i++)
             {
                 Coord previous_coord = coords.back();
                 previous_coord.second++;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
                 coords.push_back(previous_coord);
             }
         }
@@ -58,7 +56,6 @@ std::vector<Coord> parse(const std::string &input)
             {
                 Coord previous_coord = coords.back();
                 previous_coord.second--;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
                 coords.push_back(previous_coord);
             }
         }
@@ -68,7 +65,6 @@ std::vector<Coord> parse(const std::string &input)
             {
                 Coord previous_coord = coords.back();
                 previous_coord.first--;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
                 coords.push_back(previous_coord);
             }
         }
@@ -78,13 +74,10 @@ std::vector<Coord> parse(const std::string &input)
             {
                 Coord previous_coord = coords.back();
                 previous_coord.first++;
-                //std::cout<< "(" << previous_coord.first << "," << previous_coord.second << ")" << std::endl;
                 coords.push_back(previous_coord);
             }
         }
     };
-
-    std::for_each(instructions.begin(), instructions.end(), instructions_to_coords);
 
     return coords;
 }
