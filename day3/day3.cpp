@@ -127,8 +127,6 @@ int part1()
               "U62,R66,U55,R34,D71,R55,D58,R83"};
     first = rasterize(tokenize(inputs.first));
     second = rasterize(tokenize(inputs.second));
-    //intersections = find_intersections(first, second);
-    //distance = closest_intersection(intersections);
     std::sort(first.begin(), first.end());
     std::sort(second.begin(), second.end());
     intersections.clear();
@@ -144,8 +142,6 @@ int part1()
               "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"};
     first = rasterize(tokenize(inputs.first));
     second = rasterize(tokenize(inputs.second));
-    //intersections = find_intersections(first, second);
-    //distance = closest_intersection(intersections);
     std::sort(first.begin(), first.end());
     std::sort(second.begin(), second.end());
     intersections.clear();
@@ -159,8 +155,6 @@ int part1()
     inputs = kInput;
     first = rasterize(tokenize(inputs.first));
     second = rasterize(tokenize(inputs.second));
-    //intersections = find_intersections(first, second);
-    //distance = closest_intersection(intersections);
     std::sort(first.begin(), first.end());
     std::sort(second.begin(), second.end());
     intersections.clear();
