@@ -79,23 +79,10 @@ Wire rasterize(const std::vector<std::string> &instructions)
         }
     };
 
+    // Erase the origin
+    coords.erase(coords.begin());
+
     return coords;
-}
-
-std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coord> second)
-{
-    std::vector<Coord> intersections;
-    auto get_intersections = [&intersections, second](const Coord &coord) {
-        auto res = std::find(second.begin(), second.end(), coord);
-        if (res != second.end() && res != second.begin())
-        {
-            intersections.push_back(*res);
-        }
-    };
-
-    std::for_each(first.begin(), first.end(), get_intersections);
-
-    return intersections;
 }
 
 int closest_intersection(std::vector<Coord> intersections)
@@ -125,7 +112,12 @@ int part1()
               "U7,R6,D4,L4"};
     first = rasterize(tokenize(inputs.first));
     second = rasterize(tokenize(inputs.second));
-    intersections = find_intersections(first, second);
+    std::sort(first.begin(), first.end());
+    std::sort(second.begin(), second.end());
+    intersections.clear();
+    std::set_intersection(first.begin(), first.end(),
+                          second.begin(), second.end(),
+                          std::back_inserter(intersections));
     distance = closest_intersection(intersections);
     assert(6 == distance);
 
@@ -135,7 +127,14 @@ int part1()
               "U62,R66,U55,R34,D71,R55,D58,R83"};
     first = rasterize(tokenize(inputs.first));
     second = rasterize(tokenize(inputs.second));
-    intersections = find_intersections(first, second);
+    //intersections = find_intersections(first, second);
+    //distance = closest_intersection(intersections);
+    std::sort(first.begin(), first.end());
+    std::sort(second.begin(), second.end());
+    intersections.clear();
+    std::set_intersection(first.begin(), first.end(),
+                          second.begin(), second.end(),
+                          std::back_inserter(intersections));
     distance = closest_intersection(intersections);
     assert(159 == distance);
 
@@ -145,7 +144,14 @@ int part1()
               "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"};
     first = rasterize(tokenize(inputs.first));
     second = rasterize(tokenize(inputs.second));
-    intersections = find_intersections(first, second);
+    //intersections = find_intersections(first, second);
+    //distance = closest_intersection(intersections);
+    std::sort(first.begin(), first.end());
+    std::sort(second.begin(), second.end());
+    intersections.clear();
+    std::set_intersection(first.begin(), first.end(),
+                          second.begin(), second.end(),
+                          std::back_inserter(intersections));
     distance = closest_intersection(intersections);
     assert(135 == distance);
 
@@ -153,7 +159,14 @@ int part1()
     inputs = kInput;
     first = rasterize(tokenize(inputs.first));
     second = rasterize(tokenize(inputs.second));
-    intersections = find_intersections(first, second);
+    //intersections = find_intersections(first, second);
+    //distance = closest_intersection(intersections);
+    std::sort(first.begin(), first.end());
+    std::sort(second.begin(), second.end());
+    intersections.clear();
+    std::set_intersection(first.begin(), first.end(),
+                          second.begin(), second.end(),
+                          std::back_inserter(intersections));
     distance = closest_intersection(intersections);
     assert(896 == distance);
     return distance;
@@ -161,7 +174,5 @@ int part1()
 
 int main()
 {
-    //std::cout<< kInput.first << std::endl;
-    //std::cout<< kInput.second << std::endl;
     std::cout << "Part1 distance: " << part1() << std::endl;
 }
