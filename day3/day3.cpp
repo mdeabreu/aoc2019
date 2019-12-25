@@ -164,6 +164,7 @@ int part1()
     second_wire = parse(second_wire_string);
     intersections = find_intersections(first_wire, second_wire);
     distance = closest_intersection(intersections);
+    assert(896 == distance);
     return distance;
 }
 
@@ -171,5 +172,5 @@ int main()
 {
     //std::cout<< kInput.first << std::endl;
     //std::cout<< kInput.second << std::endl;
-    part1();
+    std::cout<< "Part1 distance: " << part1() << std::endl;
 }
