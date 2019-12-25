@@ -11,7 +11,7 @@ std::vector<std::string> tokenize(const std::string &input, const char &token)
     std::string current_chunk;
 
     // Iterate and tokenize the input string
-    for(const char& current_character : input)
+    for (const char &current_character : input)
     {
         if (current_character == token)
         {
@@ -52,7 +52,7 @@ std::vector<Coord> parse(const std::string &input)
         }
         else if (direction == 'D')
         {
-                        for (int i = 0; i < num_steps; i++)
+            for (int i = 0; i < num_steps; i++)
             {
                 Coord previous_coord = coords.back();
                 previous_coord.second--;
@@ -61,7 +61,7 @@ std::vector<Coord> parse(const std::string &input)
         }
         else if (direction == 'L')
         {
-                        for (int i = 0; i < num_steps; i++)
+            for (int i = 0; i < num_steps; i++)
             {
                 Coord previous_coord = coords.back();
                 previous_coord.first--;
@@ -70,7 +70,7 @@ std::vector<Coord> parse(const std::string &input)
         }
         else if (direction == 'R')
         {
-                        for (int i = 0; i < num_steps; i++)
+            for (int i = 0; i < num_steps; i++)
             {
                 Coord previous_coord = coords.back();
                 previous_coord.first++;
@@ -85,12 +85,12 @@ std::vector<Coord> parse(const std::string &input)
 std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coord> second)
 {
     std::vector<Coord> intersections;
-    auto get_intersections = [&intersections, second](const Coord& coord){
+    auto get_intersections = [&intersections, second](const Coord &coord) {
         auto res = std::find(second.begin(), second.end(), coord);
         if (res != second.end() && res != second.begin())
         {
             intersections.push_back(*res);
-}
+        }
     };
 
     std::for_each(first.begin(), first.end(), get_intersections);
@@ -100,7 +100,7 @@ std::vector<Coord> find_intersections(std::vector<Coord> first, std::vector<Coor
 
 int closest_intersection(std::vector<Coord> intersections)
 {
-    auto coord_compare = [](const Coord& a, const Coord& b) -> bool {
+    auto coord_compare = [](const Coord &a, const Coord &b) -> bool {
         return (abs(a.first) + abs(a.second)) < (abs(b.first) + abs(b.second));
     };
     Coord closest = *std::min_element(intersections.begin(), intersections.end(), coord_compare);
@@ -165,5 +165,5 @@ int main()
 {
     //std::cout<< kInput.first << std::endl;
     //std::cout<< kInput.second << std::endl;
-    std::cout<< "Part1 distance: " << part1() << std::endl;
+    std::cout << "Part1 distance: " << part1() << std::endl;
 }
