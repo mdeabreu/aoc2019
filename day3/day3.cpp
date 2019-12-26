@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <limits>
 #include "day3.hpp"
 
 typedef std::pair<int, int> Coord;
@@ -92,6 +93,34 @@ int closest_intersection(std::vector<Coord> &intersections)
     Coord closest = *std::min_element(intersections.begin(), intersections.end(), coord_compare);
 
     return closest.first + closest.second;
+}
+
+int fewest_steps(std::vector<Coord> &intersections, const Wire &first, const Wire &second)
+{
+    intersections.erase(std::find(intersections.begin(), intersections.end(), Coord{0, 0}));
+
+    int min{std::numeric_limits<int>::max()};
+    for (const Coord &intersection : intersections)
+    {
+        int sum{0};
+        Wire::const_iterator iter = std::find(first.begin(), first.end(), intersection);
+        if (iter != first.end())
+        {
+            sum += std::distance(first.begin(), iter);
+        }
+        iter = std::find(second.begin(), second.end(), intersection);
+        if (iter != second.end())
+        {
+            sum += std::distance(second.begin(), iter);
+        }
+
+        if (sum < min)
+        {
+            min = sum;
+        }
+    }
+
+    return min;
 }
 
 int part1()
