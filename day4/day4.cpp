@@ -37,24 +37,51 @@ bool rule_six_digit(const int &password)
     return res;
 }
 
-bool rule_adjacent(const int &password)
+bool rule_adjacent(const int &password, const bool &pairs_only)
 {
     std::string password_string = std::to_string(password);
 
     char prev_number{};
-    for (const char& number : password_string)
+    int num_adjacent{1};
+    bool found_pair{false};
+    for (const char &number : password_string)
     {
         if (prev_number == number)
         {
-            return true;
+            if (pairs_only)
+            {
+                num_adjacent++;
+            }
+            else
+            {
+                return true;
+            }
         }
         else
         {
+            if (num_adjacent == 2)
+            {
+                found_pair = true;
+            }
+
+            num_adjacent = 1;
             prev_number = number;
         }
     }
 
-    return false;
+    if (pairs_only)
+    {
+        if (num_adjacent == 2)
+        {
+            found_pair = true;
+        }
+
+        return found_pair;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool rule_never_decrease(const int &password)
@@ -66,19 +93,19 @@ bool rule_never_decrease(const int &password)
     int n5 = fmod(password / 10, 10);
     int n6 = fmod(password / 1, 10);
 
-    bool res =  (n1 <= n2) &&
-           (n2 <= n3) &&
-           (n3 <= n4) &&
-           (n4 <= n5) &&
-           (n5 <= n6);
+    bool res = (n1 <= n2) &&
+               (n2 <= n3) &&
+               (n3 <= n4) &&
+               (n4 <= n5) &&
+               (n5 <= n6);
 
-           return res;
+    return res;
 }
 
-bool validate(const int &password)
+bool validate(const int &password, const bool &pairs_only = false)
 {
     return (rule_six_digit(password) &&
-            rule_adjacent(password) &&
+            rule_adjacent(password, pairs_only) &&
             rule_never_decrease(password));
 }
 
@@ -95,7 +122,7 @@ int part1()
     int num_valid{0};
     std::vector<std::string> input = tokenize(kInput, '-');
     int i = atoi((*input.begin()).data());
-    for (int i = atoi((*input.begin()).data()); i <= atoi((*(input.end()-1)).data()); i++)
+    for (int i = atoi((*input.begin()).data()); i <= atoi((*(input.end() - 1)).data()); i++)
     {
         if (validate(i))
         {
@@ -110,7 +137,31 @@ int part1()
 
 int part2()
 {
-    return 2;
+    bool valid;
+
+    valid = validate(112233, true);
+    assert(true == valid);
+
+    valid = validate(123444, true);
+    assert(false == valid);
+
+    valid = validate(111122, true);
+    assert(true == valid);
+
+    int num_valid{0};
+    std::vector<std::string> input = tokenize(kInput, '-');
+    int i = atoi((*input.begin()).data());
+    for (int i = atoi((*input.begin()).data()); i <= atoi((*(input.end() - 1)).data()); i++)
+    {
+        if (validate(i, true))
+        {
+            num_valid++;
+        }
+    }
+
+    assert(1419 == num_valid);
+
+    return num_valid;
 }
 
 int main()
