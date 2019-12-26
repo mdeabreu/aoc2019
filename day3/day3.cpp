@@ -194,7 +194,89 @@ int part1()
     return distance;
 }
 
+int part2()
+{
+    // parse the string for each line, build up an array of line segments
+    // for each line segment, find intersections, store
+    // find intersection with min x, min y
+    std::pair<std::string, std::string> inputs;
+    Wire first;
+    Wire first_sorted;
+    Wire second;
+    Wire second_sorted;
+    std::vector<Coord> intersections;
+    int steps;
+
+    // R8,U5,L5,D3
+    // U7,R6,D4,L4 = 30 steps
+    inputs = {"R8,U5,L5,D3",
+              "U7,R6,D4,L4"};
+    first = rasterize(tokenize(inputs.first));
+    first_sorted = first;
+    second = rasterize(tokenize(inputs.second));
+    second_sorted = second;
+    std::sort(first_sorted.begin(), first_sorted.end());
+    std::sort(second_sorted.begin(), second_sorted.end());
+    intersections.clear();
+    std::set_intersection(first_sorted.begin(), first_sorted.end(),
+                          second_sorted.begin(), second_sorted.end(),
+                          std::back_inserter(intersections));
+    steps = fewest_steps(intersections, first, second);
+    assert(30 == steps);
+
+    // R75,D30,R83,U83,L12,D49,R71,U7,L72
+    // U62,R66,U55,R34,D71,R55,D58,R83 = 610 steps
+    inputs = {"R75,D30,R83,U83,L12,D49,R71,U7,L72",
+              "U62,R66,U55,R34,D71,R55,D58,R83"};
+    first = rasterize(tokenize(inputs.first));
+    first_sorted = first;
+    second = rasterize(tokenize(inputs.second));
+    second_sorted = second;
+    std::sort(first_sorted.begin(), first_sorted.end());
+    std::sort(second_sorted.begin(), second_sorted.end());
+    intersections.clear();
+    std::set_intersection(first_sorted.begin(), first_sorted.end(),
+                          second_sorted.begin(), second_sorted.end(),
+                          std::back_inserter(intersections));
+    steps = fewest_steps(intersections, first, second);
+    assert(610 == steps);
+
+    // R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
+    // U98,R91,D20,R16,D67,R40,U7,R15,U6,R7 = 410 steps
+    inputs = {"R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51",
+              "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"};
+    first = rasterize(tokenize(inputs.first));
+    first_sorted = first;
+    second = rasterize(tokenize(inputs.second));
+    second_sorted = second;
+    std::sort(first_sorted.begin(), first_sorted.end());
+    std::sort(second_sorted.begin(), second_sorted.end());
+    intersections.clear();
+    std::set_intersection(first_sorted.begin(), first_sorted.end(),
+                          second_sorted.begin(), second_sorted.end(),
+                          std::back_inserter(intersections));
+    steps = fewest_steps(intersections, first, second);
+    assert(410 == steps);
+
+    // Now for the real deal
+    inputs = kInput;
+    first = rasterize(tokenize(inputs.first));
+    first_sorted = first;
+    second = rasterize(tokenize(inputs.second));
+    second_sorted = second;
+    std::sort(first_sorted.begin(), first_sorted.end());
+    std::sort(second_sorted.begin(), second_sorted.end());
+    intersections.clear();
+    std::set_intersection(first_sorted.begin(), first_sorted.end(),
+                          second_sorted.begin(), second_sorted.end(),
+                          std::back_inserter(intersections));
+    steps = fewest_steps(intersections, first, second);
+    assert(16524 == steps);
+    return steps;
+}
+
 int main()
 {
     std::cout << "Part1 distance: " << part1() << std::endl;
+    std::cout << "Part2 steps: " << part2() << std::endl;
 }
