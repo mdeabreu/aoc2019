@@ -79,14 +79,13 @@ Wire rasterize(const std::vector<std::string> &instructions)
         }
     };
 
-    // Erase the origin
-    coords.erase(coords.begin());
-
     return coords;
 }
 
-int closest_intersection(std::vector<Coord> intersections)
+int closest_intersection(std::vector<Coord> &intersections)
 {
+    intersections.erase(std::find(intersections.begin(), intersections.end(), Coord{0,0}));
+
     auto coord_compare = [](const Coord &a, const Coord &b) -> bool {
         return (abs(a.first) + abs(a.second)) < (abs(b.first) + abs(b.second));
     };
