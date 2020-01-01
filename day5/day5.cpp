@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <stack>
 #include <limits>
 #include <cmath>
 #include <cassert>
@@ -56,9 +57,30 @@ public:
         // The last two digits of the number are the opcode
         int code = *pc % 100;
         opcode = static_cast<OpCode>(code);
+
+        // Everything else are the parameter modes
+        std::string mode = std::to_string(*pc / 100);
+        for (const char& c : mode)
+        {
+            if (c == '0') modes.push(ParameterMode::Position);
+            else if (c == '1') modes.push(ParameterMode::Immediate);
+        }
+
+        // We've decoded the opcode and parameter modes, increment PC
+        pc++;
     };
 
-    void execute(){};
+    void execute()
+    {
+        switch(opcode)
+        {
+            case OpCode::Add: Add(); break;
+            case OpCode::Mul: Mul(); break;
+            case OpCode::In:  In(); break;
+            case OpCode::Out: Out(); break;
+            case OpCode::Hcf: Hcf(); break;
+        }
+    };
 
     void write(int addr, int data)
     {
@@ -70,11 +92,17 @@ public:
         return ram[addr];
     };
 
+    void Add(){};
+    void Mul(){};
+    void In(){};
+    void Out(){};
+    void Hcf(){};
+
     // Members
 public:
     std::array<int, 1024>::iterator pc;
     OpCode opcode;
-    std::vector<ParameterMode> modes;
+    std::stack<ParameterMode> modes;
     std::array<int, 1024> ram{0};
 };
 
