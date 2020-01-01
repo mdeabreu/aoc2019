@@ -106,7 +106,7 @@ public:
     std::array<int, 1024> ram{0};
 };
 
-int main()
+void test_all_opcodes()
 {
     std::vector<int> input {1,2,3,4,99};
     IntCode computer(input);
@@ -114,21 +114,32 @@ int main()
     computer.decode();
     assert(computer.opcode == Add);
 
-    computer.pc++;
     computer.decode();
     assert(computer.opcode == Mul);
 
-    computer.pc++;
     computer.decode();
     assert(computer.opcode == In);
 
-    computer.pc++;
     computer.decode();
     assert(computer.opcode == Out);
 
-    computer.pc++;
     computer.decode();
     assert(computer.opcode == Hcf);
+}
 
+void test_parameter_modes()
+{
+    std::vector<int> input {1002};
+    IntCode computer(input);
+
+    computer.decode();
+    std::stack<ParameterMode> expected(std::deque<ParameterMode>{Immediate, Position});
+    assert(computer.modes == expected);
+}
+
+int main()
+{
+    test_all_opcodes();
+    test_parameter_modes();
     return 0;
 }
