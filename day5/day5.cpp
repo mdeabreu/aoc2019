@@ -273,6 +273,12 @@ void test_hcf()
     computer.run();
 }
 
+void part1()
+{
+    IntCode computer(kInput);
+    computer.run();
+}
+
 int main()
 {
     test_all_opcodes();
@@ -282,5 +288,8 @@ int main()
     //test_in();
     //test_out();
     test_hcf();
+    
+    part1();
+
     return 0;
 }
