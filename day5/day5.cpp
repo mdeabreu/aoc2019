@@ -136,13 +136,16 @@ public:
     {
         int data{0};
         std::cin >> data;
-        write(*pc++, data);
+        int param1 = load(get_mode());
+        write(param1, data);
+        pc++;
     };
 
     void Out()
     {
         int param1 = load(get_mode());
-        std::cout<< param1;
+        std::cout<< param1 << std::endl;
+        pc++;
     };
     void Hcf(){};
 
