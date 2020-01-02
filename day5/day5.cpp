@@ -48,7 +48,14 @@ public:
     ~IntCode(){};
 
     // Infinite loop until cpu halts
-    void run(){};
+    void run()
+    {
+        while (!hcf)
+        {
+            decode();
+            execute();
+        }
+    };
 
     // Decode the instruction at pc
     // Sets opcode, and access flags
@@ -79,6 +86,13 @@ public:
             case OpCode::In:  In(); break;
             case OpCode::Out: Out(); break;
             case OpCode::Hcf: Hcf(); break;
+        }
+
+        // Clear opcode and parameter modes
+        opcode = Nop;
+        while (!modes.empty())
+        {
+            modes.pop();
         }
     };
 
@@ -147,7 +161,12 @@ public:
         std::cout<< param1 << std::endl;
         pc++;
     };
-    void Hcf(){};
+
+    void Hcf()
+    {
+        hcf = true;
+        pc++;
+    };
 
     ParameterMode get_mode()
     {
@@ -163,6 +182,7 @@ public:
 
     // Members
 public:
+    bool hcf{false}; // Flag to Halt Catch Fire
     std::array<int, 1024>::iterator pc;
     OpCode opcode;
     std::stack<ParameterMode> modes;
@@ -246,6 +266,13 @@ void test_out()
     std::cout<< std::endl;
 }
 
+void test_hcf()
+{
+    std::vector<int> input {1101, 1, 2, 5, 99, 0};
+    IntCode computer(input);
+    computer.run();
+}
+
 int main()
 {
     test_all_opcodes();
@@ -254,5 +281,6 @@ int main()
     test_mul();
     //test_in();
     //test_out();
+    test_hcf();
     return 0;
 }
