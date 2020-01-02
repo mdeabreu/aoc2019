@@ -131,7 +131,14 @@ public:
         // Write the result
         write(*pc++, param1 * param2);
     };
-    void In(){};
+
+    void In()
+    {
+        int data{0};
+        std::cin >> data;
+        write(*pc++, data);
+    };
+
     void Out(){};
     void Hcf(){};
 
@@ -206,11 +213,22 @@ void test_mul()
     assert(computer.ram[4] == 99);
 }
 
+void test_in()
+{
+    std::vector<int> input {3, 2, 0};
+    IntCode computer(input);
+
+    computer.decode();
+    computer.execute();
+    assert(computer.ram[2] == 99);
+}
+
 int main()
 {
     test_all_opcodes();
     test_parameter_modes();
     test_add();
     test_mul();
+    //test_in();
     return 0;
 }
