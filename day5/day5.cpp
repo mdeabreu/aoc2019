@@ -139,7 +139,11 @@ public:
         write(*pc++, data);
     };
 
-    void Out(){};
+    void Out()
+    {
+        int param1 = load(get_mode());
+        std::cout<< param1;
+    };
     void Hcf(){};
 
     ParameterMode get_mode()
@@ -223,6 +227,22 @@ void test_in()
     assert(computer.ram[2] == 99);
 }
 
+void test_out()
+{
+    std::vector<int> input {104, 123, 4, 4, 321};
+    IntCode computer(input);
+
+    computer.decode();
+    computer.execute();
+
+    std::cout<< std::endl;
+
+    computer.decode();
+    computer.execute();
+
+    std::cout<< std::endl;
+}
+
 int main()
 {
     test_all_opcodes();
@@ -230,5 +250,6 @@ int main()
     test_add();
     test_mul();
     //test_in();
+    //test_out();
     return 0;
 }
