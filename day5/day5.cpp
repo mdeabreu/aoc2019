@@ -129,12 +129,10 @@ public:
     void Add()
     {
         // Get parameter 1
-        ParameterMode mode = get_mode();
-        int param1 = load(mode);
+        int param1 = load(get_mode());
 
         // Get parameter 2
-        mode = get_mode();
-        int param2 = load(mode);
+        int param2 = load(get_mode());
 
         // Write the result and increment PC
         write(*pc++, param1 + param2);
@@ -143,12 +141,10 @@ public:
     void Mul()
     {
         // Get parameter 1
-        ParameterMode mode = get_mode();
-        int param1 = load(mode);
+        int param1 = load(get_mode());
 
         // Get parameter 2
-        mode = get_mode();
-        int param2 = load(mode);
+        int param2 = load(get_mode());
 
         // Write the result
         write(*pc++, param1 * param2);
@@ -156,14 +152,20 @@ public:
 
     void In()
     {
+        // Get input
         int data{0};
         std::cin >> data;
+
+        // Write input to ram
         write(*pc++, data);
     };
 
     void Out()
     {
+        // Load data to output
         int param1 = load(get_mode());
+
+        // Output
         std::cout<< param1 << std::endl;
     };
 
