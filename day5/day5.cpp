@@ -5,6 +5,7 @@
 #include <limits>
 #include <cmath>
 #include <cassert>
+#include <string>
 #include "day5.hpp"
 
 enum ParameterMode
@@ -153,8 +154,7 @@ public:
     void In()
     {
         // Get input
-        int data{0};
-        std::cin >> data;
+        int data{atoi(input.c_str())};
 
         // Write input to ram
         write(*pc++, data);
@@ -166,7 +166,7 @@ public:
         int param1 = load(get_mode());
 
         // Output
-        std::cout<< param1 << std::endl;
+        output+= std::to_string(param1);
     };
 
     void Hcf()
@@ -246,6 +246,8 @@ public:
     OpCode opcode;
     std::stack<ParameterMode> modes;
     std::array<int, 1024> ram{0};
+    std::string input;
+    std::string output;
 };
 
 void test_all_opcodes()
@@ -304,6 +306,7 @@ void test_in()
     std::vector<int> input {3, 2, 0};
     IntCode computer(input);
 
+    computer.input = "99";
     computer.decode();
     computer.execute();
     assert(computer.ram[2] == 99);
@@ -316,13 +319,13 @@ void test_out()
 
     computer.decode();
     computer.execute();
-
-    std::cout<< std::endl;
+    assert(computer.output == "123");
+    computer.output.erase();
 
     computer.decode();
     computer.execute();
-
-    std::cout<< std::endl;
+    assert(computer.output == "321");
+    computer.output.erase();
 }
 
 void test_jit()
@@ -379,15 +382,17 @@ void test_hcf()
 void part1()
 {
     IntCode computer(kInput);
+    computer.input = "1";
     computer.run();
-    //assert(answer == 11933517)
+    assert(computer.output == "00000000011933517");
 }
 
 void part2()
 {
     IntCode computer(kInput);
+    computer.input = "5";
     computer.run();
-    //assert(answer == 10428568)
+    assert(computer.output == "10428568");
 }
 
 int main()
@@ -396,16 +401,16 @@ int main()
     test_parameter_modes();
     test_add();
     test_mul();
-    //test_in();
-    //test_out();
+    test_in();
+    test_out();
     test_jit();
     test_jif();
     test_lt();
     test_eq();
     test_hcf();
     
-    //part1();
-    //part2();
+    part1();
+    part2();
 
     return 0;
 }
