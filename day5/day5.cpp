@@ -20,6 +20,10 @@ enum OpCode
     Mul,
     In,
     Out,
+    Jit,
+    Jif,
+    Lt,
+    Eq,
     Hcf = 99
 };
 
@@ -83,8 +87,12 @@ public:
         {
             case OpCode::Add: Add(); break;
             case OpCode::Mul: Mul(); break;
-            case OpCode::In:  In(); break;
+            case OpCode::In:  In();  break;
             case OpCode::Out: Out(); break;
+            case OpCode::Jit: Jit(); break;
+            case OpCode::Jif: Jif(); break;
+            case OpCode::Lt:  Lt();  break;
+            case OpCode::Eq:  Eq();  break;
             case OpCode::Hcf: Hcf(); break;
         }
 
@@ -164,6 +172,11 @@ public:
         hcf = true;
         pc++;
     };
+
+    void Jit(){};
+    void Jif(){};
+    void Lt(){};
+    void Eq(){};
 
     ParameterMode get_mode()
     {
