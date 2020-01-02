@@ -150,16 +150,13 @@ public:
     {
         int data{0};
         std::cin >> data;
-        int param1 = load(get_mode());
-        write(param1, data);
-        pc++;
+        write(*pc++, data);
     };
 
     void Out()
     {
         int param1 = load(get_mode());
         std::cout<< param1 << std::endl;
-        pc++;
     };
 
     void Hcf()
@@ -277,6 +274,7 @@ void part1()
 {
     IntCode computer(kInput);
     computer.run();
+    //assert(answer == 11933517)
 }
 
 int main()
