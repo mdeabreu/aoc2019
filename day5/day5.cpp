@@ -92,11 +92,60 @@ public:
         return ram[addr];
     };
 
-    void Add(){};
-    void Mul(){};
+    int load(ParameterMode mode)
+    {
+        if (mode == ParameterMode::Immediate)
+        {
+            return *pc++;
+        }
+        else // if (mode == ParameterMode::Position)
+        {
+            return read(*pc++);
+        }
+    }
+
+    void Add()
+    {
+        // Get parameter 1
+        ParameterMode mode = get_mode();
+        int param1 = load(mode);
+
+        // Get parameter 2
+        mode = get_mode();
+        int param2 = load(mode);
+
+        // Write the result and increment PC
+        write(*pc++, param1 + param2);
+    };
+
+    void Mul()
+    {
+        // Get parameter 1
+        ParameterMode mode = get_mode();
+        int param1 = load(mode);
+
+        // Get parameter 2
+        mode = get_mode();
+        int param2 = load(mode);
+
+        // Write the result
+        write(*pc++, param1 * param2);
+    };
     void In(){};
     void Out(){};
     void Hcf(){};
+
+    ParameterMode get_mode()
+    {
+        ParameterMode result = ParameterMode::Position;
+        if (modes.size())
+        {
+            result = modes.top();
+            modes.pop();
+        }
+
+        return result;
+    };
 
     // Members
 public:
@@ -137,9 +186,31 @@ void test_parameter_modes()
     assert(computer.modes == expected);
 }
 
+void test_add()
+{
+    std::vector<int> input {1001, 4, 3, 4, 33};
+    IntCode computer(input);
+
+    computer.decode();
+    computer.execute();
+    assert(computer.ram[4] == 36);
+}
+
+void test_mul()
+{
+    std::vector<int> input {1002, 4, 3, 4, 33};
+    IntCode computer(input);
+
+    computer.decode();
+    computer.execute();
+    assert(computer.ram[4] == 99);
+}
+
 int main()
 {
     test_all_opcodes();
     test_parameter_modes();
+    test_add();
+    test_mul();
     return 0;
 }
