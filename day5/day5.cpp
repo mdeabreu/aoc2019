@@ -175,10 +175,57 @@ public:
         pc++;
     };
 
-    void Jit(){};
-    void Jif(){};
-    void Lt(){};
-    void Eq(){};
+    void Jit()
+    {
+        int param1 = load(get_mode());
+        int param2 = load(get_mode());
+        
+        if (param1)
+        {
+            pc = (ram.begin() + param2);
+        }
+    };
+
+    void Jif()
+    {
+        int param1 = load(get_mode());
+        int param2 = load(get_mode());
+        
+        if (!param1)
+        {
+            pc = (ram.begin() + param2);
+        }
+    };
+
+    void Lt()
+    {
+        int param1 = load(get_mode());
+        int param2 = load(get_mode());
+
+        if (param1 < param2)
+        {
+            write(*pc++, 1);
+        }
+        else
+        {
+            write(*pc++, 0);
+        }
+    };
+
+    void Eq()
+    {
+        int param1 = load(get_mode());
+        int param2 = load(get_mode());
+
+        if (param1 == param2)
+        {
+            write(*pc++, 1);
+        }
+        else
+        {
+            write(*pc++, 0);
+        }
+    };
 
     ParameterMode get_mode()
     {
@@ -278,6 +325,50 @@ void test_out()
     std::cout<< std::endl;
 }
 
+void test_jit()
+{
+    std::vector<int> input{1105,1,5,0,0,99};
+    IntCode computer(input);
+    computer.decode();
+    computer.execute();
+    assert(*computer.pc == 99);
+}
+
+void test_jif()
+{
+    std::vector<int> input{1106,0,5,0,0,99};
+    IntCode computer(input);
+    computer.decode();
+    computer.execute();
+    assert(*computer.pc == 99);
+}
+
+void test_lt()
+{
+    std::vector<int> input{1107, 50, 70, 8, 1107, 70, 50, 9, 99, 99};
+    IntCode computer(input);
+    computer.decode();
+    computer.execute();
+    assert(computer.ram[8] == 1);
+
+    computer.decode();
+    computer.execute();
+    assert(computer.ram[9] == 0);
+}
+
+void test_eq()
+{
+    std::vector<int> input{1108, 50, 50, 8, 1108, 50, 70, 9, 99, 99};
+    IntCode computer(input);
+    computer.decode();
+    computer.execute();
+    assert(computer.ram[8] == 1);
+
+    computer.decode();
+    computer.execute();
+    assert(computer.ram[9] == 0);
+}
+
 void test_hcf()
 {
     std::vector<int> input {1101, 1, 2, 5, 99, 0};
@@ -292,6 +383,13 @@ void part1()
     //assert(answer == 11933517)
 }
 
+void part2()
+{
+    IntCode computer(kInput);
+    computer.run();
+    //assert(answer == 10428568)
+}
+
 int main()
 {
     test_all_opcodes();
@@ -300,9 +398,14 @@ int main()
     test_mul();
     //test_in();
     //test_out();
+    test_jit();
+    test_jif();
+    test_lt();
+    test_eq();
     test_hcf();
     
-    part1();
+    //part1();
+    //part2();
 
     return 0;
 }
