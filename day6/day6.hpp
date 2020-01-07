@@ -1,6 +1,5 @@
 #include <string>
-static const std::string kInput = R"ORBIT(
-J1C)J1M
+static const std::string kInput = R"ORBIT(J1C)J1M
 N2W)2DM
 DST)VZL
 555)45Q
@@ -1001,5 +1000,4 @@ G4Z)GKJ
 598)L58
 6R1)34Z
 DVN)6KR
-VMM)687
-)ORBIT";
+VMM)687)ORBIT";
