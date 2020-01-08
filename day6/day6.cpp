@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <algorithm>
 #include <cassert>
 #include "day6.hpp"
 
@@ -115,6 +116,42 @@ int part1()
     return num_orbits;
 }
 
+int part2()
+{
+    auto orbit_strings = tokenize(kInput);
+    Orbits orbits;
+
+    for (auto orbit : orbit_strings)
+    {
+        process(orbits, orbit);
+    }
+
+    std::string parent = orbits["SAN"];
+    std::vector<std::string> santa_orbit_chain;
+    while (parent != "")
+    {
+        santa_orbit_chain.push_back(parent);
+        parent = orbits[parent];
+    }
+    std::reverse(santa_orbit_chain.begin(), santa_orbit_chain.end());
+
+    parent = orbits["YOU"];
+    std::vector<std::string> you_orbit_chain;
+    while (parent != "")
+    {
+        you_orbit_chain.push_back(parent);
+        parent = orbits[parent];
+    }
+    std::reverse(you_orbit_chain.begin(), you_orbit_chain.end());
+
+    auto mismatch = std::mismatch(santa_orbit_chain.begin(), santa_orbit_chain.end(), you_orbit_chain.begin());
+
+    int santa_jumps = std::distance(mismatch.first, santa_orbit_chain.end());
+    int you_jumps = std::distance(mismatch.second, you_orbit_chain.end());
+
+    return santa_jumps + you_jumps;
+}
+
 int main()
 {
     test_tokenize();
@@ -122,4 +159,5 @@ int main()
     test_part1();
 
     std::cout<< "Part 1: " << part1() << std::endl;
+    std::cout<< "Part 2: " << part2() << std::endl;
 }
