@@ -1,7 +1,10 @@
+#include "day7.hpp"
 #include <iostream>
 #include <vector>
 #include <array>
 #include <stack>
+#include <queue>
+#include <cassert>
 
 enum ParameterMode
 {
@@ -90,6 +93,9 @@ public:
             case OpCode::Lt:  Lt();  break;
             case OpCode::Eq:  Eq();  break;
             case OpCode::Hcf: Hcf(); break;
+            
+            case OpCode::Nop: break;
+            default: break;
         }
 
         // Clear opcode and parameter modes
@@ -148,11 +154,9 @@ public:
 
     void In()
     {
-        // Get input
-        int data{atoi(input.c_str())};
-
         // Write input to ram
-        write(*pc++, data);
+        write(*pc++, input.front());
+        input.pop();
     };
 
     void Out()
@@ -161,7 +165,7 @@ public:
         int param1 = load(get_mode());
 
         // Output
-        output+= std::to_string(param1);
+        output.push(param1);
     };
 
     void Hcf()
@@ -241,8 +245,8 @@ public:
     OpCode opcode;
     std::stack<ParameterMode> modes;
     std::array<int, 1024> ram{0};
-    std::string input;
-    std::string output;
+    std::queue<int> input;
+    std::queue<int> output;
 };
 
 int main()
