@@ -249,8 +249,121 @@ public:
     std::queue<int> output;
 };
 
+void part1_test1()
+{
+    std::vector<int> input{3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0};
+
+    // Init amplifiers with program code
+    IntCode ampa(input),
+            ampb(input),
+            ampc(input),
+            ampd(input),
+            ampe(input);
+    
+    // Init input with phase sequence 43210
+    ampa.input.push(4);
+    ampb.input.push(3);
+    ampc.input.push(2);
+    ampd.input.push(1);
+    ampe.input.push(0);
+
+    // Run the sequence
+    ampa.input.push(0);
+    ampa.run();
+
+    ampb.input.push(ampa.output.front());
+    ampb.run();
+
+    ampc.input.push(ampb.output.front());
+    ampc.run();
+
+    ampd.input.push(ampc.output.front());
+    ampd.run();
+
+    ampe.input.push(ampd.output.front());
+    ampe.run();
+
+    assert(ampe.output.front() == 43210);
+}
+
+void part1_test2()
+{
+    std::vector<int> input{3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0};
+
+    // Init amplifiers with program code
+    IntCode ampa(input),
+            ampb(input),
+            ampc(input),
+            ampd(input),
+            ampe(input);
+    
+    // Init input with phase sequence 01234
+    ampa.input.push(0);
+    ampb.input.push(1);
+    ampc.input.push(2);
+    ampd.input.push(3);
+    ampe.input.push(4);
+
+    // Run the sequence
+    ampa.input.push(0);
+    ampa.run();
+
+    ampb.input.push(ampa.output.front());
+    ampb.run();
+
+    ampc.input.push(ampb.output.front());
+    ampc.run();
+
+    ampd.input.push(ampc.output.front());
+    ampd.run();
+
+    ampe.input.push(ampd.output.front());
+    ampe.run();
+
+    assert(ampe.output.front() == 54321);
+}
+
+void part1_test3()
+{
+    std::vector<int> input{3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0};
+
+    // Init amplifiers with program code
+    IntCode ampa(input),
+            ampb(input),
+            ampc(input),
+            ampd(input),
+            ampe(input);
+    
+    // Init input with phase sequence 10432
+    ampa.input.push(1);
+    ampb.input.push(0);
+    ampc.input.push(4);
+    ampd.input.push(3);
+    ampe.input.push(2);
+
+    // Run the sequence
+    ampa.input.push(0);
+    ampa.run();
+
+    ampb.input.push(ampa.output.front());
+    ampb.run();
+
+    ampc.input.push(ampb.output.front());
+    ampc.run();
+
+    ampd.input.push(ampc.output.front());
+    ampd.run();
+
+    ampe.input.push(ampd.output.front());
+    ampe.run();
+
+    assert(ampe.output.front() == 65210);
+}
+
 int main()
 {
-    std::cout << "Hello World" << std::endl;
+    part1_test1();
+    part1_test2();
+    part1_test3();
     return 0;
 }
