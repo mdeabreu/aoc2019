@@ -369,6 +369,23 @@ void part2_test2()
     assert(signal == 18216);
 }
 
+int part2()
+{
+    std::vector<int> phase{5, 6, 7, 8, 9};
+    int max_signal{std::numeric_limits<int>::min()};
+
+    do
+    {
+        int signal = run_amplifiers(kInput, phase);
+        if (signal > max_signal)
+            max_signal = signal;
+    } while (std::next_permutation(phase.begin(), phase.end()));
+
+    assert(max_signal == 39431233);
+
+    return max_signal;
+}
+
 int main()
 {
     part1_test1();
@@ -378,6 +395,7 @@ int main()
 
     part2_test1();
     part2_test2();
+    std::cout << "Part2: " << part2() << std::endl;
 
     return 0;
 }
