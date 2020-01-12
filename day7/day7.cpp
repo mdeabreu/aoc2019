@@ -5,6 +5,8 @@
 #include <stack>
 #include <queue>
 #include <cassert>
+#include <numeric>
+#include <algorithm>
 
 enum ParameterMode
 {
@@ -312,10 +314,28 @@ void part1_test3()
     assert(signal == 65210);
 }
 
+int part1()
+{
+    std::vector<int> phase{0, 1, 2, 3, 4};
+    int max_signal{std::numeric_limits<int>::min()};
+
+    do
+    {
+        int signal = run_amplifiers(kInput, phase);
+        if (signal > max_signal)
+            max_signal = signal;
+    } while (std::next_permutation(phase.begin(), phase.end()));
+
+    assert(max_signal == 398674);
+
+    return max_signal;
+}
+
 int main()
 {
     part1_test1();
     part1_test2();
     part1_test3();
+    std::cout << "Part1: " << part1() << std::endl;
     return 0;
 }
