@@ -31,7 +31,7 @@ Image process(const std::string &input, const unsigned int &width, const unsigne
             row.clear();
         }
 
-        row.push_back(atoi(&c));
+        row.push_back(c - '0');
     }
 
     layer.push_back(row);
@@ -76,8 +76,37 @@ void print_image(const Image &image)
         }
 
         std::cout << std::endl;
-        std::cout << std::endl;
     }
+}
+
+Image squash_layers(const Image &image)
+{
+    int width {image.at(0).at(0).size()};
+    int height {image.at(0).size()};
+
+    Image output;
+    Layer layer;
+    for (int y = 0; y < height; y++)
+    {
+        Row row;
+        for (int x = 0; x < width; x++)
+        {
+            Pixel p{2};
+            for (auto l : image)
+            {
+                p = l.at(y).at(x);
+                if (p != 2)
+                {
+                    break;
+                }
+            }
+            row.push_back(p);
+        }
+        layer.push_back(row);
+    }
+    output.push_back(layer);
+
+    return output;
 }
 
 void process_test()
@@ -102,9 +131,17 @@ int part1()
     return validation;
 }
 
+void part2()
+{
+    auto result = process(kInput, 25, 6);
+    auto squashed = squash_layers(result);
+    print_image(squashed);
+}
+
 int main()
 {
     process_test();
     std::cout << "Part 1: " << part1() << std::endl;
+    part2();
     return 0;
 }
