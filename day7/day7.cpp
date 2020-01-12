@@ -271,24 +271,40 @@ int run_amplifiers(const std::vector<int> &program, const std::vector<int> &phas
     ampd.input.push(phase.at(3));
     ampe.input.push(phase.at(4));
 
+    // Test if we enable the feedback loop
+    bool enable_feedback = (*std::max_element(phase.begin(), phase.end()) > 4);
+
+    int possible_output;
+
     // Run the sequence
     ampa.input.push(0);
-    ampa.run();
+    do
+    {
+        ampa.run();
 
-    ampb.input.push(ampa.output.front());
-    ampb.run();
+        ampb.input.push(ampa.output.front());
+        ampa.output.pop();
+        ampb.run();
 
-    ampc.input.push(ampb.output.front());
-    ampc.run();
+        ampc.input.push(ampb.output.front());
+        ampb.output.pop();
+        ampc.run();
 
-    ampd.input.push(ampc.output.front());
-    ampd.run();
+        ampd.input.push(ampc.output.front());
+        ampc.output.pop();
+        ampd.run();
 
-    ampe.input.push(ampd.output.front());
-    ampe.run();
+        ampe.input.push(ampd.output.front());
+        ampd.output.pop();
+        ampe.run();
+
+        ampa.input.push(ampe.output.front());
+        if (!ampe.output.empty()) possible_output = ampe.output.front();
+        ampe.output.pop();
+    } while (enable_feedback && !ampe.hcf);
 
     // Return the signal
-    return ampe.output.front();
+    return possible_output;
 };
 
 void part1_test1()
@@ -335,11 +351,33 @@ int part1()
     return max_signal;
 }
 
+void part2_test1()
+{
+    std::vector<int> input{3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5};
+
+    int signal = run_amplifiers(input, {9,8,7,6,5});
+
+    assert(signal == 139629729);
+}
+
+void part2_test2()
+{
+    std::vector<int> input{3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10};
+
+    int signal = run_amplifiers(input, {9,7,8,5,6});
+
+    assert(signal == 18216);
+}
+
 int main()
 {
     part1_test1();
     part1_test2();
     part1_test3();
     std::cout << "Part1: " << part1() << std::endl;
+
+    part2_test1();
+    part2_test2();
+
     return 0;
 }
