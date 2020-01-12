@@ -55,11 +55,13 @@ public:
     // Infinite loop until cpu halts
     void run()
     {
-        while (!hcf)
+        while (!hcf && !halt)
         {
             decode();
             execute();
         }
+
+        halt = false;
     };
 
     // Decode the instruction at pc
@@ -168,6 +170,7 @@ public:
 
         // Output
         output.push(param1);
+        halt = true;
     };
 
     void Hcf()
@@ -243,6 +246,7 @@ public:
     // Members
 public:
     bool hcf{false}; // Flag to Halt Catch Fire
+    bool halt{false};
     std::array<int, 1024>::iterator pc;
     OpCode opcode;
     std::stack<ParameterMode> modes;
