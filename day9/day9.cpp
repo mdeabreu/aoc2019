@@ -4,6 +4,7 @@
 #include <stack>
 #include <queue>
 #include <array>
+#include <cassert>
 
 enum ParameterMode
 {
@@ -288,51 +289,61 @@ public:
 void part1_test1()
 {
     std::vector<long> input{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99};
+    std::vector<long> results;
     IntCode computer(input);
     while (!computer.hcf)
     {
         computer.run();
         if (!computer.output.empty())
         {
-            std::cout << computer.output.front() << std::endl;
+            results.push_back(computer.output.front());
             computer.output.pop();
         }
     }
+
+    assert(results == input);
 }
 
 void part1_test2()
 {
     std::vector<long> input{1102, 34915192, 34915192, 7, 4, 7, 99, 0};
+    long result{0};
     IntCode computer(input);
     while (!computer.hcf)
     {
         computer.run();
         if (!computer.output.empty())
         {
-            std::cout << computer.output.front() << std::endl;
+            result = computer.output.front();
             computer.output.pop();
         }
     }
+
+    assert(1219070632396864 == result);
 }
 
 void part1_test3()
 {
     std::vector<long> input{104, 1125899906842624, 99};
+    long result{0};
     IntCode computer(input);
     while (!computer.hcf)
     {
         computer.run();
         if (!computer.output.empty())
         {
-            std::cout << computer.output.front() << std::endl;
+            result = computer.output.front();
             computer.output.pop();
         }
     }
+
+    assert(1125899906842624 == result);
 }
 
-void part1()
+long part1()
 {
     IntCode computer(kInput);
+    long result{0};
     computer.input.push_back(1);
 
     while(!computer.hcf)
@@ -340,15 +351,20 @@ void part1()
         computer.run();
         if (!computer.output.empty())
         {
-            std::cout << computer.output.front() << std::endl;
+            result = computer.output.front();
             computer.output.pop();
         }
     }
+
+    assert(3638931938 == result);
+
+    return result;
 }
 
-void part2()
+long part2()
 {
     IntCode computer(kInput);
+    long result{0};
     computer.input.push_back(2);
 
     while(!computer.hcf)
@@ -356,23 +372,22 @@ void part2()
         computer.run();
         if (!computer.output.empty())
         {
-            std::cout << computer.output.front() << std::endl;
+            result = computer.output.front();
             computer.output.pop();
         }
     }
+
+    assert(86025 == result);
+
+    return result;
 }
 
 int main()
 {
-    std::cout << "Hello World" << std::endl;
     part1_test1();
-    std::cout << std::endl;
     part1_test2();
-    std::cout << std::endl;
     part1_test3();
-    std::cout << std::endl;
 
-    part1();
-
-    part2();
+    std::cout << "Part 1: " << part1() << std::endl;
+    std::cout << "Part 2: " << part2() << std::endl;
 }
