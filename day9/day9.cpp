@@ -346,6 +346,22 @@ void part1()
     }
 }
 
+void part2()
+{
+    IntCode computer(kInput);
+    computer.input.push_back(2);
+
+    while(!computer.hcf)
+    {
+        computer.run();
+        if (!computer.output.empty())
+        {
+            std::cout << computer.output.front() << std::endl;
+            computer.output.pop();
+        }
+    }
+}
+
 int main()
 {
     std::cout << "Hello World" << std::endl;
@@ -357,4 +373,6 @@ int main()
     std::cout << std::endl;
 
     part1();
+
+    part2();
 }
