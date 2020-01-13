@@ -8,7 +8,8 @@
 enum ParameterMode
 {
     Position,
-    Immediate
+    Immediate,
+    Relative
 };
 
 enum OpCode
@@ -22,6 +23,7 @@ enum OpCode
     Jif,
     Lt,
     Eq,
+    Rbo,
     Hcf = 99
 };
 
@@ -31,14 +33,19 @@ public:
     // Default constructor with empty ram
     IntCode()
     {
+        ram.reserve(2048);
+        std::fill_n(std::back_inserter(ram), 2048, 0);
         pc = ram.begin();
     };
 
     // Initialize the ram of the CPU with a set of ints
-    IntCode(std::vector<int> input)
+    IntCode(std::vector<long> input)
     {
+        ram.reserve(2048);
+        std::fill_n(std::back_inserter(ram), 2048, 0);
+
         auto i = ram.begin();
-        for (const auto &data : input)
+        for (long data : input)
         {
             *i = data;
             i++;
@@ -47,7 +54,7 @@ public:
         pc = ram.begin();
     };
 
-    ~IntCode(){};
+    //~IntCode(){};
 
     // Infinite loop until cpu halts
     void run()
@@ -75,6 +82,7 @@ public:
         {
             if (c == '0') modes.push(ParameterMode::Position);
             else if (c == '1') modes.push(ParameterMode::Immediate);
+            else if (c == '2') modes.push(ParameterMode::Relative);
         }
 
         // We've decoded the opcode and parameter modes, increment PC
@@ -93,6 +101,7 @@ public:
             case OpCode::Jif: Jif(); break;
             case OpCode::Lt:  Lt();  break;
             case OpCode::Eq:  Eq();  break;
+            case OpCode::Rbo: Rbo(); break;
             case OpCode::Hcf: Hcf(); break;
             
             case OpCode::Nop: break;
@@ -107,21 +116,37 @@ public:
         }
     };
 
-    void write(int addr, int data)
+    void write(int addr, long data)
     {
-        ram[addr] = data;
+        ram.at(addr) = data;
     };
 
-    int read(int addr)
+    void write(ParameterMode mode, long data)
     {
-        return ram[addr];
+        if (mode == ParameterMode::Relative)
+        {
+            write(relative_base + *pc++, data);
+        }
+        else
+        {
+            write(*pc++, data);
+        }
     };
 
-    int load(ParameterMode mode)
+    long read(int addr)
+    {
+        return ram.at(addr);
+    };
+
+    long load(ParameterMode mode)
     {
         if (mode == ParameterMode::Immediate)
         {
             return *pc++;
+        }
+        else if (mode == ParameterMode::Relative)
+        {
+            return read(relative_base + *pc++);
         }
         else // if (mode == ParameterMode::Position)
         {
@@ -132,38 +157,40 @@ public:
     void Add()
     {
         // Get parameter 1
-        int param1 = load(get_mode());
+        long param1 = load(get_mode());
 
         // Get parameter 2
-        int param2 = load(get_mode());
+        long param2 = load(get_mode());
 
         // Write the result and increment PC
-        write(*pc++, param1 + param2);
+        write(get_mode(), param1 + param2);
     };
 
     void Mul()
     {
         // Get parameter 1
-        int param1 = load(get_mode());
+        long param1 = load(get_mode());
 
         // Get parameter 2
-        int param2 = load(get_mode());
+        long param2 = load(get_mode());
 
         // Write the result
-        write(*pc++, param1 * param2);
+        write(get_mode(), param1 * param2);
     };
 
     void In()
     {
         // Write input to ram
-        write(*pc++, input.front());
-        input.pop();
+        long data = input.front();
+        input.pop_front();
+
+        write(get_mode(), data);
     };
 
     void Out()
     {
         // Load data to output
-        int param1 = load(get_mode());
+        long param1 = load(get_mode());
 
         // Output
         output.push(param1);
@@ -178,8 +205,8 @@ public:
 
     void Jit()
     {
-        int param1 = load(get_mode());
-        int param2 = load(get_mode());
+        long param1 = load(get_mode());
+        long param2 = load(get_mode());
         
         if (param1)
         {
@@ -189,8 +216,8 @@ public:
 
     void Jif()
     {
-        int param1 = load(get_mode());
-        int param2 = load(get_mode());
+        long param1 = load(get_mode());
+        long param2 = load(get_mode());
         
         if (!param1)
         {
@@ -200,32 +227,37 @@ public:
 
     void Lt()
     {
-        int param1 = load(get_mode());
-        int param2 = load(get_mode());
+        long param1 = load(get_mode());
+        long param2 = load(get_mode());
 
         if (param1 < param2)
         {
-            write(*pc++, 1);
+            write(get_mode(), 1);
         }
         else
         {
-            write(*pc++, 0);
+            write(get_mode(), 0);
         }
     };
 
     void Eq()
     {
-        int param1 = load(get_mode());
-        int param2 = load(get_mode());
+        long param1 = load(get_mode());
+        long param2 = load(get_mode());
 
         if (param1 == param2)
         {
-            write(*pc++, 1);
+            write(get_mode(), 1);
         }
         else
         {
-            write(*pc++, 0);
+            write(get_mode(), 0);
         }
+    };
+
+    void Rbo()
+    {
+        relative_base += load(get_mode());
     };
 
     ParameterMode get_mode()
@@ -244,15 +276,85 @@ public:
 public:
     bool hcf{false}; // Flag to Halt Catch Fire
     bool halt{false};
-    std::array<int, 1024>::iterator pc;
+    long relative_base{0};
+    std::vector<long>::iterator pc;
     OpCode opcode;
     std::stack<ParameterMode> modes;
-    std::array<int, 1024> ram{0};
-    std::queue<int> input;
-    std::queue<int> output;
+    std::vector<long> ram;
+    std::deque<long> input;
+    std::queue<long> output;
 };
+
+void part1_test1()
+{
+    std::vector<long> input{109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99};
+    IntCode computer(input);
+    while (!computer.hcf)
+    {
+        computer.run();
+        if (!computer.output.empty())
+        {
+            std::cout << computer.output.front() << std::endl;
+            computer.output.pop();
+        }
+    }
+}
+
+void part1_test2()
+{
+    std::vector<long> input{1102, 34915192, 34915192, 7, 4, 7, 99, 0};
+    IntCode computer(input);
+    while (!computer.hcf)
+    {
+        computer.run();
+        if (!computer.output.empty())
+        {
+            std::cout << computer.output.front() << std::endl;
+            computer.output.pop();
+        }
+    }
+}
+
+void part1_test3()
+{
+    std::vector<long> input{104, 1125899906842624, 99};
+    IntCode computer(input);
+    while (!computer.hcf)
+    {
+        computer.run();
+        if (!computer.output.empty())
+        {
+            std::cout << computer.output.front() << std::endl;
+            computer.output.pop();
+        }
+    }
+}
+
+void part1()
+{
+    IntCode computer(kInput);
+    computer.input.push_back(1);
+
+    while(!computer.hcf)
+    {
+        computer.run();
+        if (!computer.output.empty())
+        {
+            std::cout << computer.output.front() << std::endl;
+            computer.output.pop();
+        }
+    }
+}
 
 int main()
 {
     std::cout << "Hello World" << std::endl;
+    part1_test1();
+    std::cout << std::endl;
+    part1_test2();
+    std::cout << std::endl;
+    part1_test3();
+    std::cout << std::endl;
+
+    part1();
 }
