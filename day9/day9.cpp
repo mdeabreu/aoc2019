@@ -346,7 +346,7 @@ long part1()
     long result{0};
     computer.input.push_back(1);
 
-    while(!computer.hcf)
+    while (!computer.hcf)
     {
         computer.run();
         if (!computer.output.empty())
@@ -367,7 +367,7 @@ long part2()
     long result{0};
     computer.input.push_back(2);
 
-    while(!computer.hcf)
+    while (!computer.hcf)
     {
         computer.run();
         if (!computer.output.empty())
